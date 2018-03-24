@@ -1,6 +1,8 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {NavController} from 'ionic-angular';
 
+import { Observable } from 'rxjs/Rx'
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -29,6 +31,9 @@ export class HomePage {
   private image: any;
 
   private imagePoint: any;
+
+  private subscription: any;
+
 
   constructor(public navCtrl: NavController) {
 
@@ -81,13 +86,8 @@ export class HomePage {
   drawSquare() {
     this.clearCanvas();
 
-    this._CONTEXT.beginPath();
     this.drawBackGround();
-    this._CONTEXT.drawImage(this.imagePoint, 30, 30);
-    this._CONTEXT.arc(this._CANVAS.width / 2, 200, 80, 0, 2 * Math.PI);
-    this._CONTEXT.lineWidth = 5;
-    this._CONTEXT.strokeStyle = '#ffff00';
-    this._CONTEXT.stroke();
+    this._CONTEXT.restore();
 
   }
 
@@ -114,7 +114,7 @@ export class HomePage {
 
   randomPoints() :any[] {
 
-    let loop = Math.floor(Math.random() * 6) +50;
+    let loop = Math.floor(Math.random() * 6) +1;
 
     let points :any[] = new Array(loop+1);
 
@@ -140,7 +140,16 @@ export class HomePage {
   return value;
   }
 
+  timerStart() {
 
+    this.subscription = Observable.interval(500).subscribe(x => {
+      this.randomIcon();
+    });
+  }
+
+  timerStop(){
+    this.subscription.unsubscribe ();
+  }
 
 
 
